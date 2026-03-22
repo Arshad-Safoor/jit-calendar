@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a1628">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>JIT Academic Calendar 2025-26 | Even Semester</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -12,7 +15,6 @@
     --jit-gold: #c8922a;
     --jit-gold-light: #f0b84a;
     --jit-cream: #faf7f2;
-    --jit-white: #ffffff;
     --working-green: #1a7a4a;
     --working-green-bg: #e8f7ef;
     --holiday-red: #c0392b;
@@ -23,13 +25,16 @@
     --sunday-gray-bg: #f2f2f2;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html { scroll-behavior: smooth; }
 
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--jit-cream);
     color: var(--jit-navy);
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   /* ── HEADER ── */
@@ -107,7 +112,7 @@
     padding: 12px 32px;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 16px;
     align-items: center;
   }
 
@@ -117,7 +122,6 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--jit-blue);
-    margin-right: 4px;
   }
 
   .legend-item {
@@ -130,19 +134,22 @@
   }
 
   .legend-dot {
-    width: 14px; height: 14px;
+    width: 13px; height: 13px;
     border-radius: 3px;
     flex-shrink: 0;
   }
 
-  /* ── MONTH NAV ── */
+  /* ── MONTH TABS ── */
   .month-tabs {
     display: flex;
     gap: 0;
     padding: 24px 32px 0;
     border-bottom: 2px solid #e0dcd4;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .month-tabs::-webkit-scrollbar { display: none; }
 
   .month-tab {
     padding: 10px 22px;
@@ -157,6 +164,7 @@
     white-space: nowrap;
     transition: all 0.2s;
     font-family: 'DM Sans', sans-serif;
+    flex-shrink: 0;
   }
 
   .month-tab:hover { color: var(--jit-blue); }
@@ -167,7 +175,7 @@
     border-bottom-color: var(--jit-gold);
   }
 
-  /* ── MAIN CONTENT ── */
+  /* ── MAIN ── */
   main { padding: 28px 32px 60px; }
 
   .month-section { display: none; }
@@ -178,6 +186,7 @@
     align-items: baseline;
     gap: 16px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
   }
 
   .month-name {
@@ -206,157 +215,7 @@
     font-family: 'DM Mono', monospace;
   }
 
-  /* ── CALENDAR GRID ── */
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-
-  .day-header {
-    text-align: center;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 8px 0;
-    color: var(--jit-blue);
-  }
-
-  .day-header.sun-header { color: var(--sunday-gray); }
-
-  .day-cell {
-    border-radius: 10px;
-    padding: 10px 8px;
-    min-height: 88px;
-    position: relative;
-    transition: transform 0.15s, box-shadow 0.15s;
-    cursor: default;
-  }
-
-  .day-cell:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-    z-index: 2;
-  }
-
-  .day-cell.empty { background: transparent; cursor: default; }
-  .day-cell.empty:hover { transform: none; box-shadow: none; }
-
-  /* Status types */
-  .day-cell.working {
-    background: var(--working-green-bg);
-    border: 1.5px solid #b8e8cf;
-  }
-
-  .day-cell.holiday {
-    background: var(--holiday-red-bg);
-    border: 1.5px solid #f5c6c2;
-  }
-
-  .day-cell.sunday {
-    background: var(--sunday-gray-bg);
-    border: 1.5px solid #e2e2e2;
-  }
-
-  .day-cell.event {
-    background: var(--event-blue-bg);
-    border: 1.5px solid #c2d3ef;
-  }
-
-  .day-cell.self-learning {
-    background: #fff8e6;
-    border: 1.5px solid #f0d78a;
-  }
-
-  .day-cell.exam {
-    background: #fdf0f8;
-    border: 1.5px solid #e8b8d8;
-  }
-
-  .date-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .day-cell.working .date-num { color: var(--working-green); }
-  .day-cell.holiday .date-num { color: var(--holiday-red); }
-  .day-cell.sunday .date-num { color: var(--sunday-gray); }
-  .day-cell.event .date-num { color: var(--event-blue); }
-  .day-cell.self-learning .date-num { color: #b5840a; }
-  .day-cell.exam .date-num { color: #8b2a70; }
-
-  .day-label {
-    font-size: 9px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 5px;
-  }
-
-  .day-cell.working .day-label { color: var(--working-green); }
-  .day-cell.holiday .day-label { color: var(--holiday-red); }
-  .day-cell.sunday .day-label { color: var(--sunday-gray); }
-  .day-cell.event .day-label { color: var(--event-blue); }
-  .day-cell.self-learning .day-label { color: #b5840a; }
-  .day-cell.exam .day-label { color: #8b2a70; }
-
-  .working-num {
-    position: absolute;
-    top: 8px;
-    right: 9px;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--working-green);
-    background: white;
-    border-radius: 4px;
-    padding: 1px 4px;
-    line-height: 1.4;
-  }
-
-  .event-text {
-    font-size: 9.5px;
-    line-height: 1.35;
-    color: #444;
-    margin-top: 3px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .day-cell.working .event-text { color: #1a5a35; }
-  .day-cell.holiday .event-text { color: #922b21; }
-  .day-cell.self-learning .event-text { color: #7a5900; }
-  .day-cell.exam .event-text { color: #6d2060; }
-
-  /* ── TOOLTIP ── */
-  .day-cell[data-full-event]:hover::after {
-    content: attr(data-full-event);
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--jit-navy);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-family: 'DM Sans', sans-serif;
-    line-height: 1.5;
-    white-space: pre-wrap;
-    max-width: 220px;
-    z-index: 100;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    pointer-events: none;
-  }
-
-  /* ── STATS BAR ── */
+  /* ── STATS ── */
   .stats-row {
     display: flex;
     gap: 12px;
@@ -370,7 +229,7 @@
     padding: 14px 20px;
     border-left: 4px solid var(--jit-gold);
     flex: 1;
-    min-width: 140px;
+    min-width: 130px;
   }
 
   .stat-num {
@@ -389,6 +248,135 @@
     letter-spacing: 0.06em;
   }
 
+  /* ── CALENDAR GRID ── */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .day-header {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 8px 0;
+    color: var(--jit-blue);
+  }
+  .day-header.sun-header { color: var(--sunday-gray); }
+
+  .day-cell {
+    border-radius: 10px;
+    padding: 10px 8px;
+    min-height: 88px;
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .day-cell:active { transform: scale(0.97); }
+
+  @media (hover: hover) {
+    .day-cell:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      z-index: 2;
+    }
+  }
+
+  .day-cell.empty { background: transparent; cursor: default; pointer-events: none; }
+
+  .day-cell.working  { background: var(--working-green-bg); border: 1.5px solid #b8e8cf; }
+  .day-cell.holiday  { background: var(--holiday-red-bg);   border: 1.5px solid #f5c6c2; }
+  .day-cell.sunday   { background: var(--sunday-gray-bg);   border: 1.5px solid #e2e2e2; }
+  .day-cell.event    { background: var(--event-blue-bg);    border: 1.5px solid #c2d3ef; }
+  .day-cell.self-learning { background: #fff8e6; border: 1.5px solid #f0d78a; }
+  .day-cell.exam     { background: #fdf0f8; border: 1.5px solid #e8b8d8; }
+
+  .date-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .day-cell.working .date-num      { color: var(--working-green); }
+  .day-cell.holiday .date-num      { color: var(--holiday-red); }
+  .day-cell.sunday .date-num       { color: var(--sunday-gray); }
+  .day-cell.event .date-num        { color: var(--event-blue); }
+  .day-cell.self-learning .date-num{ color: #b5840a; }
+  .day-cell.exam .date-num         { color: #8b2a70; }
+
+  .day-label {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 5px;
+  }
+
+  .day-cell.working .day-label      { color: var(--working-green); }
+  .day-cell.holiday .day-label      { color: var(--holiday-red); }
+  .day-cell.sunday .day-label       { color: var(--sunday-gray); }
+  .day-cell.event .day-label        { color: var(--event-blue); }
+  .day-cell.self-learning .day-label{ color: #b5840a; }
+  .day-cell.exam .day-label         { color: #8b2a70; }
+
+  .working-num {
+    position: absolute;
+    top: 8px; right: 9px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    color: var(--working-green);
+    background: white;
+    border-radius: 4px;
+    padding: 1px 4px;
+    line-height: 1.4;
+  }
+
+  .event-text {
+    font-size: 9.5px;
+    line-height: 1.35;
+    color: #444;
+    margin-top: 3px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .day-cell.working .event-text      { color: #1a5a35; }
+  .day-cell.holiday .event-text      { color: #922b21; }
+  .day-cell.self-learning .event-text{ color: #7a5900; }
+  .day-cell.exam .event-text         { color: #6d2060; }
+
+  /* Desktop hover tooltip */
+  @media (hover: hover) {
+    .day-cell[data-full-event]:hover::after {
+      content: attr(data-full-event);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%; transform: translateX(-50%);
+      background: var(--jit-navy);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      max-width: 220px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      pointer-events: none;
+    }
+  }
+
   /* ── FOOTER ── */
   footer {
     background: var(--jit-navy);
@@ -397,21 +385,223 @@
     padding: 20px;
     font-size: 12px;
   }
-
   footer strong { color: var(--jit-gold-light); }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 700px) {
-    main { padding: 16px; }
-    .header-top { padding: 12px 16px; }
-    .legend-bar { padding: 10px 16px; }
-    .month-tabs { padding: 16px 16px 0; }
+  /* ══════════════════════════════
+     MOBILE BOTTOM-SHEET POPUP
+  ══════════════════════════════ */
+  .popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    align-items: flex-end;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+  .popup-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .popup-sheet {
+    background: white;
+    width: 100%;
+    max-width: 520px;
+    border-radius: 24px 24px 0 0;
+    padding: 16px 24px 40px;
+    animation: slideUp 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .popup-handle {
+    width: 44px; height: 4px;
+    background: #ddd; border-radius: 2px;
+    margin: 0 auto 18px;
+  }
+
+  .popup-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; color: #999;
+    margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  .popup-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; font-weight: 700;
+    color: var(--jit-navy);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  .popup-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+
+  .badge-working   { background: var(--working-green-bg); color: var(--working-green); }
+  .badge-holiday   { background: var(--holiday-red-bg);   color: var(--holiday-red); }
+  .badge-sunday    { background: var(--sunday-gray-bg);   color: var(--sunday-gray); }
+  .badge-event     { background: var(--event-blue-bg);    color: var(--event-blue); }
+  .badge-self-learning { background: #fff8e6; color: #b5840a; }
+  .badge-exam      { background: #fdf0f8; color: #8b2a70; }
+
+  .popup-working-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; color: var(--working-green);
+    margin-bottom: 12px;
+  }
+
+  .popup-event {
+    font-size: 15px; line-height: 1.65; color: #333;
+    background: var(--jit-cream);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    white-space: pre-wrap;
+    border-left: 3px solid var(--jit-gold);
+  }
+
+  .popup-close {
+    width: 100%; padding: 15px;
+    background: var(--jit-navy); color: white;
+    border: none; border-radius: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .popup-close:active { background: var(--jit-blue); }
+
+  /* ══════════════════════════════
+     TABLET (≤ 900px)
+  ══════════════════════════════ */
+  @media (max-width: 900px) {
+    .header-top { padding: 14px 20px; gap: 14px; }
+    .header-text h1 { font-size: 17px; }
+    .header-nav { padding: 8px 20px; }
+    .legend-bar { padding: 10px 20px; gap: 12px; }
+    main { padding: 20px; }
+    .month-tabs { padding: 20px 20px 0; }
+    .stat-card { min-width: 110px; padding: 12px 14px; }
+    .stat-num { font-size: 24px; }
+  }
+
+  /* ══════════════════════════════
+     MOBILE (≤ 600px)
+  ══════════════════════════════ */
+  @media (max-width: 600px) {
+    /* Header */
+    .header-top { padding: 10px 14px; gap: 10px; }
+    .logo-circle { width: 42px; height: 42px; font-size: 15px; }
+    .header-text h1 { font-size: 13px; line-height: 1.3; }
+    .header-text p { font-size: 10px; }
+    .header-nav {
+      padding: 8px 14px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    .nav-title { font-size: 11px; }
+    .nav-year  { font-size: 11px; }
+
+    /* Legend — compact 2-col grid */
+    .legend-bar {
+      padding: 10px 14px;
+      gap: 8px 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .legend-title { grid-column: 1 / -1; font-size: 10px; }
+    .legend-item  { font-size: 11px; gap: 6px; }
+    .legend-dot   { width: 11px; height: 11px; }
+
+    /* Month tabs — scrollable pills, no underline style */
+    .month-tabs {
+      padding: 12px 14px 12px;
+      gap: 8px;
+      border-bottom: 1px solid #e8e4de;
+      overflow-x: auto;
+    }
+    .month-tab {
+      padding: 8px 18px;
+      font-size: 12px;
+      border-radius: 22px;
+      border: 1.5px solid #ddd;
+      background: white;
+      margin-bottom: 0;
+      color: #555;
+      border-bottom-width: 1.5px;
+    }
+    .month-tab.active {
+      background: var(--jit-navy);
+      color: white;
+      border-color: var(--jit-navy);
+    }
+
+    /* Main */
+    main { padding: 14px 12px 60px; }
+    .month-header { gap: 8px; margin-bottom: 12px; }
+    .month-name  { font-size: 30px; }
+    .month-year  { font-size: 13px; }
+    .working-days-badge { font-size: 11px; padding: 5px 12px; margin-left: 0; }
+
+    /* Stats — 2×2 grid */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .stat-card { padding: 10px 12px; min-width: unset; }
+    .stat-num  { font-size: 22px; }
+    .stat-label{ font-size: 9.5px; }
+
+    /* Calendar grid */
     .calendar-grid { gap: 4px; }
-    .day-cell { min-height: 70px; padding: 7px 5px; }
-    .date-num { font-size: 14px; }
-    .event-text { font-size: 8px; }
-    .month-name { font-size: 26px; }
-    .stats-row { gap: 8px; }
+    .day-header { font-size: 9px; padding: 5px 0; letter-spacing: 0; }
+    .day-cell {
+      min-height: 56px;
+      padding: 6px 5px 5px;
+      border-radius: 8px;
+      border-width: 1px;
+    }
+    .date-num  { font-size: 14px; margin-bottom: 1px; }
+    .day-label { font-size: 7.5px; letter-spacing: 0; margin-bottom: 3px; }
+    .working-num {
+      font-size: 7.5px; padding: 1px 3px;
+      top: 4px; right: 4px;
+    }
+    .event-text {
+      font-size: 7px;
+      -webkit-line-clamp: 2;
+      margin-top: 1px;
+    }
+
+    footer { font-size: 11px; padding: 16px 12px; }
+  }
+
+  /* ══════════════════════════════
+     VERY SMALL (≤ 380px)
+  ══════════════════════════════ */
+  @media (max-width: 380px) {
+    .header-text h1 { font-size: 12px; }
+    .day-cell { min-height: 48px; padding: 5px 4px 4px; }
+    .date-num  { font-size: 12px; }
+    .day-label { display: none; }
+    .event-text { font-size: 6.5px; }
+    .working-num { display: none; }
   }
 </style>
 </head>
@@ -432,29 +622,40 @@
 </header>
 
 <div class="legend-bar">
-  <span class="legend-title">Legend:</span>
+  <span class="legend-title">Legend</span>
   <div class="legend-item"><div class="legend-dot" style="background:#1a7a4a"></div> Working Day</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#e0e0e0;border:1px solid #ccc"></div> Holiday / Not Working</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#e0e0e0;border:1px solid #ccc"></div> Not Working</div>
   <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div> Public Holiday</div>
   <div class="legend-item"><div class="legend-dot" style="background:#f0c040"></div> Self Learning</div>
   <div class="legend-item"><div class="legend-dot" style="background:#c060a0"></div> Exam</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#1a3a6e"></div> Event / Activity</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1a3a6e"></div> Event</div>
 </div>
 
 <div class="month-tabs" id="monthTabs"></div>
 
 <main id="mainContent"></main>
 
+<!-- Mobile bottom-sheet popup -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup-sheet" id="popupSheet">
+    <div class="popup-handle"></div>
+    <div class="popup-date"  id="popupDate"></div>
+    <div class="popup-title" id="popupTitle"></div>
+    <div class="popup-badge" id="popupBadge"></div>
+    <div class="popup-working-num" id="popupWorkingNum"></div>
+    <div class="popup-event" id="popupEvent"></div>
+    <button class="popup-close" id="popupCloseBtn">Close</button>
+  </div>
+</div>
+
 <footer>
   <strong>Jeppiaar Institute of Technology</strong> &nbsp;·&nbsp; Academic Calendar Even Semester 2025–2026 &nbsp;·&nbsp; I Year UG &amp; PG
 </footer>
 
 <script>
-// ─── DATA extracted from Excel (I Year UG & PG columns only) ───
 const calendarData = {
   "November 2025": {
-    year: 2025, month: 10, // 0-indexed
-    workingDays: 0,
+    year: 2025, month: 10,
     days: [
       {d:1,day:"SAT",status:"holiday",event:""},
       {d:2,day:"SUN",status:"sunday",event:""},
@@ -479,7 +680,7 @@ const calendarData = {
       {d:21,day:"FRI",status:"holiday",event:""},
       {d:22,day:"SAT",status:"holiday",event:""},
       {d:23,day:"SUN",status:"sunday",event:""},
-      {d:24,day:"MON",status:"holiday",event:"Not started yet (Higher year starts)"},
+      {d:24,day:"MON",status:"holiday",event:"Higher Year Semester Begins"},
       {d:25,day:"TUE",status:"holiday",event:""},
       {d:26,day:"WED",status:"holiday",event:""},
       {d:27,day:"THU",status:"holiday",event:""},
@@ -490,7 +691,6 @@ const calendarData = {
   },
   "December 2025": {
     year: 2025, month: 11,
-    workingDays: 0,
     days: [
       {d:1,day:"MON",status:"holiday",event:""},
       {d:2,day:"TUE",status:"holiday",event:""},
@@ -527,7 +727,6 @@ const calendarData = {
   },
   "January 2026": {
     year: 2026, month: 0,
-    workingDays: 17,
     days: [
       {d:1,day:"THU",status:"holiday",event:"NEW YEAR"},
       {d:2,day:"FRI",status:"holiday",event:""},
@@ -564,7 +763,6 @@ const calendarData = {
   },
   "February 2026": {
     year: 2026, month: 1,
-    workingDays: 21,
     days: [
       {d:1,day:"SUN",status:"holiday",event:"THAIPOOSAM"},
       {d:2,day:"MON",n:18,status:"working",event:""},
@@ -598,7 +796,6 @@ const calendarData = {
   },
   "March 2026": {
     year: 2026, month: 2,
-    workingDays: 23,
     days: [
       {d:1,day:"SUN",status:"sunday",event:""},
       {d:2,day:"MON",n:39,status:"working",event:"SEMESTER END EXAM REGISTRATION – I Year UG & PG"},
@@ -635,7 +832,6 @@ const calendarData = {
   },
   "April 2026": {
     year: 2026, month: 3,
-    workingDays: 22,
     days: [
       {d:1,day:"WED",n:62,status:"exam",event:"CIE – II EXAM (I Year UG & PG)"},
       {d:2,day:"THU",status:"holiday",event:"MAUNDY THURSDAY"},
@@ -671,7 +867,6 @@ const calendarData = {
   },
   "May 2026": {
     year: 2026, month: 4,
-    workingDays: 0,
     days: [
       {d:1,day:"FRI",status:"holiday",event:"MAY DAY"},
       {d:2,day:"SAT",status:"holiday",event:""},
@@ -708,57 +903,50 @@ const calendarData = {
   },
 };
 
+const MONTH_NAMES_FULL = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAY_NAMES = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
 
 function getStatusClass(day) {
-  if (day.status === "sunday") return "sunday";
+  if (day.status === "sunday")       return "sunday";
   if (day.status === "self-learning") return "self-learning";
-  if (day.status === "exam") return "exam";
-  if (day.status === "event" && day.n) return "event";
-  if (day.status === "working" && day.n) return "working";
-  if (day.event && day.event.length > 0) return "event";
+  if (day.status === "exam")         return "exam";
+  if (day.n)                         return day.status === "event" ? "event" : "working";
+  if (day.event && day.event.length) return "event";
   return "holiday";
 }
 
 function getStatusLabel(day) {
   const cls = getStatusClass(day);
-  if (cls === "sunday") return "Weekend";
-  if (cls === "working") return "Working Day";
-  if (cls === "holiday") return "Holiday";
-  if (cls === "self-learning") return "Self Learning";
-  if (cls === "exam") return "Exam";
-  if (cls === "event") return "Event";
-  return "";
+  const map = { sunday:"Weekend", working:"Working Day", holiday:"Holiday",
+                "self-learning":"Self Learning", exam:"Exam Day", event:"Event" };
+  return map[cls] || "";
 }
 
 function buildCalendar() {
   const tabsEl = document.getElementById("monthTabs");
   const mainEl = document.getElementById("mainContent");
   const months = Object.keys(calendarData);
+  const defaultIdx = 2; // January
 
   months.forEach((monthName, idx) => {
     // Tab
     const tab = document.createElement("button");
-    tab.className = "month-tab" + (idx === 2 ? " active" : ""); // Jan active by default
+    tab.className = "month-tab" + (idx === defaultIdx ? " active" : "");
     tab.textContent = monthName.split(" ")[0];
     tab.onclick = () => switchMonth(monthName);
     tabsEl.appendChild(tab);
 
-    // Section
     const data = calendarData[monthName];
     const section = document.createElement("div");
-    section.className = "month-section" + (idx === 2 ? " active" : "");
+    section.className = "month-section" + (idx === defaultIdx ? " active" : "");
     section.id = "month-" + monthName.replace(/\s+/g,"_");
 
-    // Count stats
-    const workDays = data.days.filter(d => d.n).length;
-    const holidays = data.days.filter(d => getStatusClass(d) === "holiday").length;
+    const workDays  = data.days.filter(d => d.n).length;
+    const holidays  = data.days.filter(d => getStatusClass(d) === "holiday").length;
     const selfLearn = data.days.filter(d => getStatusClass(d) === "self-learning").length;
-    const exams = data.days.filter(d => getStatusClass(d) === "exam").length;
+    const exams     = data.days.filter(d => getStatusClass(d) === "exam").length;
 
-    // Find first day of month
-    const firstDate = new Date(data.year, data.month, 1);
-    const firstDayOfWeek = firstDate.getDay(); // 0=Sun
+    const firstDayOfWeek = new Date(data.year, data.month, 1).getDay();
 
     section.innerHTML = `
       <div class="month-header">
@@ -788,10 +976,8 @@ function buildCalendar() {
     `;
     mainEl.appendChild(section);
 
-    // Build grid
     const grid = section.querySelector(".calendar-grid");
 
-    // Day headers
     DAY_NAMES.forEach(d => {
       const h = document.createElement("div");
       h.className = "day-header" + (d === "SUN" ? " sun-header" : "");
@@ -799,18 +985,16 @@ function buildCalendar() {
       grid.appendChild(h);
     });
 
-    // Empty cells before first day
     for (let i = 0; i < firstDayOfWeek; i++) {
-      const empty = document.createElement("div");
-      empty.className = "day-cell empty";
-      grid.appendChild(empty);
+      const e = document.createElement("div");
+      e.className = "day-cell empty";
+      grid.appendChild(e);
     }
 
-    // Day cells
     data.days.forEach(day => {
-      const cls = getStatusClass(day);
+      const cls   = getStatusClass(day);
       const label = getStatusLabel(day);
-      const cell = document.createElement("div");
+      const cell  = document.createElement("div");
       cell.className = `day-cell ${cls}`;
       if (day.event) cell.setAttribute("data-full-event", day.event);
 
@@ -820,6 +1004,12 @@ function buildCalendar() {
         ${day.n ? `<div class="working-num">#${day.n}</div>` : ""}
         ${day.event ? `<div class="event-text">${day.event.replace(/\n/g,"<br>")}</div>` : ""}
       `;
+
+      // Click → open popup (works on both touch & desktop)
+      cell.addEventListener("click", () => {
+        openPopup(day, monthName, cls, label);
+      });
+
       grid.appendChild(cell);
     });
   });
@@ -829,10 +1019,66 @@ function switchMonth(monthName) {
   document.querySelectorAll(".month-section").forEach(s => s.classList.remove("active"));
   document.querySelectorAll(".month-tab").forEach(t => t.classList.remove("active"));
   document.getElementById("month-" + monthName.replace(/\s+/g,"_")).classList.add("active");
-  const tabs = document.querySelectorAll(".month-tab");
   const months = Object.keys(calendarData);
-  tabs[months.indexOf(monthName)].classList.add("active");
+  document.querySelectorAll(".month-tab")[months.indexOf(monthName)].classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+// ── POPUP ──
+const overlay       = document.getElementById("popupOverlay");
+const popupDate     = document.getElementById("popupDate");
+const popupTitle    = document.getElementById("popupTitle");
+const popupBadge    = document.getElementById("popupBadge");
+const popupWorkNum  = document.getElementById("popupWorkingNum");
+const popupEvent    = document.getElementById("popupEvent");
+const popupCloseBtn = document.getElementById("popupCloseBtn");
+
+const badgeEmoji = { working:"✅", holiday:"🔴", sunday:"☀️", "self-learning":"📖", exam:"📝", event:"🎯" };
+
+function openPopup(day, monthName, cls, label) {
+  const [mName, mYear] = monthName.split(" ");
+  const data = calendarData[monthName];
+  const fullDate = `${day.day}, ${mName} ${day.d}, ${mYear}`;
+
+  popupDate.textContent = fullDate;
+  popupTitle.textContent = day.event
+    ? day.event.split("\n")[0]
+    : (cls === "sunday" ? "Weekend" : cls === "holiday" ? "Holiday" : label);
+
+  popupBadge.textContent = (badgeEmoji[cls] || "📅") + " " + label;
+  popupBadge.className = "popup-badge badge-" + cls;
+
+  popupWorkNum.textContent = day.n ? `Working Day #${day.n}` : "";
+  popupWorkNum.style.display = day.n ? "block" : "none";
+
+  if (day.event) {
+    popupEvent.textContent = day.event;
+    popupEvent.style.display = "block";
+  } else {
+    popupEvent.style.display = "none";
+  }
+
+  overlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closePopup() {
+  overlay.classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+popupCloseBtn.addEventListener("click", closePopup);
+overlay.addEventListener("click", e => { if (e.target === overlay) closePopup(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closePopup(); });
+
+// Swipe down to close
+let touchStartY = 0;
+document.getElementById("popupSheet").addEventListener("touchstart", e => {
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+document.getElementById("popupSheet").addEventListener("touchend", e => {
+  if (e.changedTouches[0].clientY - touchStartY > 80) closePopup();
+}, { passive: true });
 
 buildCalendar();
 </script>
