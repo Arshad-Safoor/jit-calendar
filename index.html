@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JIT Academic Calendar 2025-26 | Even Semester</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --jit-navy: #0a1628;
+    --jit-blue: #1a3a6e;
+    --jit-gold: #c8922a;
+    --jit-gold-light: #f0b84a;
+    --jit-cream: #faf7f2;
+    --jit-white: #ffffff;
+    --working-green: #1a7a4a;
+    --working-green-bg: #e8f7ef;
+    --holiday-red: #c0392b;
+    --holiday-red-bg: #fdecea;
+    --event-blue: #1a3a6e;
+    --event-blue-bg: #e8eef8;
+    --sunday-gray: #9b9b9b;
+    --sunday-gray-bg: #f2f2f2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--jit-cream);
+    color: var(--jit-navy);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--jit-navy);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 32px;
+    border-bottom: 1px solid rgba(200,146,42,0.3);
+  }
+
+  .logo-circle {
+    width: 58px; height: 58px;
+    background: linear-gradient(135deg, #1565c0, #42a5f5);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: #ffffff;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(66,165,245,0.35);
+  }
+
+  .header-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+  }
+
+  .header-text p {
+    font-size: 12px;
+    color: var(--jit-gold-light);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 32px;
+    background: var(--jit-blue);
+  }
+
+  .nav-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--jit-gold-light);
+    letter-spacing: 0.05em;
+  }
+
+  .nav-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  /* ── LEGEND ── */
+  .legend-bar {
+    background: white;
+    border-bottom: 2px solid var(--jit-gold);
+    padding: 12px 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .legend-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--jit-blue);
+    margin-right: 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .legend-dot {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  /* ── MONTH NAV ── */
+  .month-tabs {
+    display: flex;
+    gap: 0;
+    padding: 24px 32px 0;
+    border-bottom: 2px solid #e0dcd4;
+    overflow-x: auto;
+  }
+
+  .month-tab {
+    padding: 10px 22px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .month-tab:hover { color: var(--jit-blue); }
+
+  .month-tab.active {
+    color: var(--jit-navy);
+    font-weight: 600;
+    border-bottom-color: var(--jit-gold);
+  }
+
+  /* ── MAIN CONTENT ── */
+  main { padding: 28px 32px 60px; }
+
+  .month-section { display: none; }
+  .month-section.active { display: block; }
+
+  .month-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .month-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--jit-navy);
+    line-height: 1;
+  }
+
+  .month-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    color: var(--jit-gold);
+    font-weight: 500;
+  }
+
+  .working-days-badge {
+    margin-left: auto;
+    background: var(--jit-navy);
+    color: var(--jit-gold-light);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── CALENDAR GRID ── */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .day-header {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 8px 0;
+    color: var(--jit-blue);
+  }
+
+  .day-header.sun-header { color: var(--sunday-gray); }
+
+  .day-cell {
+    border-radius: 10px;
+    padding: 10px 8px;
+    min-height: 88px;
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: default;
+  }
+
+  .day-cell:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    z-index: 2;
+  }
+
+  .day-cell.empty { background: transparent; cursor: default; }
+  .day-cell.empty:hover { transform: none; box-shadow: none; }
+
+  /* Status types */
+  .day-cell.working {
+    background: var(--working-green-bg);
+    border: 1.5px solid #b8e8cf;
+  }
+
+  .day-cell.holiday {
+    background: var(--holiday-red-bg);
+    border: 1.5px solid #f5c6c2;
+  }
+
+  .day-cell.sunday {
+    background: var(--sunday-gray-bg);
+    border: 1.5px solid #e2e2e2;
+  }
+
+  .day-cell.event {
+    background: var(--event-blue-bg);
+    border: 1.5px solid #c2d3ef;
+  }
+
+  .day-cell.self-learning {
+    background: #fff8e6;
+    border: 1.5px solid #f0d78a;
+  }
+
+  .day-cell.exam {
+    background: #fdf0f8;
+    border: 1.5px solid #e8b8d8;
+  }
+
+  .date-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .day-cell.working .date-num { color: var(--working-green); }
+  .day-cell.holiday .date-num { color: var(--holiday-red); }
+  .day-cell.sunday .date-num { color: var(--sunday-gray); }
+  .day-cell.event .date-num { color: var(--event-blue); }
+  .day-cell.self-learning .date-num { color: #b5840a; }
+  .day-cell.exam .date-num { color: #8b2a70; }
+
+  .day-label {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 5px;
+  }
+
+  .day-cell.working .day-label { color: var(--working-green); }
+  .day-cell.holiday .day-label { color: var(--holiday-red); }
+  .day-cell.sunday .day-label { color: var(--sunday-gray); }
+  .day-cell.event .day-label { color: var(--event-blue); }
+  .day-cell.self-learning .day-label { color: #b5840a; }
+  .day-cell.exam .day-label { color: #8b2a70; }
+
+  .working-num {
+    position: absolute;
+    top: 8px;
+    right: 9px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--working-green);
+    background: white;
+    border-radius: 4px;
+    padding: 1px 4px;
+    line-height: 1.4;
+  }
+
+  .event-text {
+    font-size: 9.5px;
+    line-height: 1.35;
+    color: #444;
+    margin-top: 3px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .day-cell.working .event-text { color: #1a5a35; }
+  .day-cell.holiday .event-text { color: #922b21; }
+  .day-cell.self-learning .event-text { color: #7a5900; }
+  .day-cell.exam .event-text { color: #6d2060; }
+
+  /* ── TOOLTIP ── */
+  .day-cell[data-full-event]:hover::after {
+    content: attr(data-full-event);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--jit-navy);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    max-width: 220px;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    pointer-events: none;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 14px 20px;
+    border-left: 4px solid var(--jit-gold);
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .stat-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--jit-navy);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: #888;
+    font-weight: 500;
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--jit-navy);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+  }
+
+  footer strong { color: var(--jit-gold-light); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    main { padding: 16px; }
+    .header-top { padding: 12px 16px; }
+    .legend-bar { padding: 10px 16px; }
+    .month-tabs { padding: 16px 16px 0; }
+    .calendar-grid { gap: 4px; }
+    .day-cell { min-height: 70px; padding: 7px 5px; }
+    .date-num { font-size: 14px; }
+    .event-text { font-size: 8px; }
+    .month-name { font-size: 26px; }
+    .stats-row { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo-circle">JIT</div>
+    <div class="header-text">
+      <h1>Jeppiaar Institute of Technology</h1>
+      <p>KUNNAM, SUNGUVARCHATRAM, SRIPERUMBUDUR – 631 604</p>
+    </div>
+  </div>
+  <div class="header-nav">
+    <span class="nav-title">Academic Calendar — Even Semester &nbsp;|&nbsp; I Year UG &amp; PG</span>
+    <span class="nav-year">2025 – 2026</span>
+  </div>
+</header>
+
+<div class="legend-bar">
+  <span class="legend-title">Legend:</span>
+  <div class="legend-item"><div class="legend-dot" style="background:#1a7a4a"></div> Working Day</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#e0e0e0;border:1px solid #ccc"></div> Holiday / Not Working</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div> Public Holiday</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f0c040"></div> Self Learning</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c060a0"></div> Exam</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1a3a6e"></div> Event / Activity</div>
+</div>
+
+<div class="month-tabs" id="monthTabs"></div>
+
+<main id="mainContent"></main>
+
+<footer>
+  <strong>Jeppiaar Institute of Technology</strong> &nbsp;·&nbsp; Academic Calendar Even Semester 2025–2026 &nbsp;·&nbsp; I Year UG &amp; PG
+</footer>
+
+<script>
+// ─── DATA extracted from Excel (I Year UG & PG columns only) ───
+const calendarData = {
+  "November 2025": {
+    year: 2025, month: 10, // 0-indexed
+    workingDays: 0,
+    days: [
+      {d:1,day:"SAT",status:"holiday",event:""},
+      {d:2,day:"SUN",status:"sunday",event:""},
+      {d:3,day:"MON",status:"holiday",event:""},
+      {d:4,day:"TUE",status:"holiday",event:""},
+      {d:5,day:"WED",status:"holiday",event:""},
+      {d:6,day:"THU",status:"holiday",event:""},
+      {d:7,day:"FRI",status:"holiday",event:""},
+      {d:8,day:"SAT",status:"holiday",event:""},
+      {d:9,day:"SUN",status:"sunday",event:""},
+      {d:10,day:"MON",status:"holiday",event:""},
+      {d:11,day:"TUE",status:"holiday",event:""},
+      {d:12,day:"WED",status:"holiday",event:""},
+      {d:13,day:"THU",status:"holiday",event:""},
+      {d:14,day:"FRI",status:"holiday",event:""},
+      {d:15,day:"SAT",status:"holiday",event:""},
+      {d:16,day:"SUN",status:"sunday",event:""},
+      {d:17,day:"MON",status:"holiday",event:""},
+      {d:18,day:"TUE",status:"holiday",event:""},
+      {d:19,day:"WED",status:"holiday",event:""},
+      {d:20,day:"THU",status:"holiday",event:""},
+      {d:21,day:"FRI",status:"holiday",event:""},
+      {d:22,day:"SAT",status:"holiday",event:""},
+      {d:23,day:"SUN",status:"sunday",event:""},
+      {d:24,day:"MON",status:"holiday",event:"Not started yet (Higher year starts)"},
+      {d:25,day:"TUE",status:"holiday",event:""},
+      {d:26,day:"WED",status:"holiday",event:""},
+      {d:27,day:"THU",status:"holiday",event:""},
+      {d:28,day:"FRI",status:"holiday",event:""},
+      {d:29,day:"SAT",status:"holiday",event:""},
+      {d:30,day:"SUN",status:"sunday",event:""},
+    ]
+  },
+  "December 2025": {
+    year: 2025, month: 11,
+    workingDays: 0,
+    days: [
+      {d:1,day:"MON",status:"holiday",event:""},
+      {d:2,day:"TUE",status:"holiday",event:""},
+      {d:3,day:"WED",status:"holiday",event:""},
+      {d:4,day:"THU",status:"holiday",event:""},
+      {d:5,day:"FRI",status:"holiday",event:""},
+      {d:6,day:"SAT",status:"holiday",event:""},
+      {d:7,day:"SUN",status:"sunday",event:""},
+      {d:8,day:"MON",status:"holiday",event:""},
+      {d:9,day:"TUE",status:"holiday",event:""},
+      {d:10,day:"WED",status:"holiday",event:""},
+      {d:11,day:"THU",status:"holiday",event:""},
+      {d:12,day:"FRI",status:"holiday",event:""},
+      {d:13,day:"SAT",status:"holiday",event:""},
+      {d:14,day:"SUN",status:"sunday",event:""},
+      {d:15,day:"MON",status:"holiday",event:""},
+      {d:16,day:"TUE",status:"holiday",event:""},
+      {d:17,day:"WED",status:"holiday",event:""},
+      {d:18,day:"THU",status:"holiday",event:""},
+      {d:19,day:"FRI",status:"holiday",event:"CHRISTMAS CELEBRATION"},
+      {d:20,day:"SAT",status:"holiday",event:""},
+      {d:21,day:"SUN",status:"sunday",event:""},
+      {d:22,day:"MON",status:"holiday",event:""},
+      {d:23,day:"TUE",status:"holiday",event:""},
+      {d:24,day:"WED",status:"holiday",event:""},
+      {d:25,day:"THU",status:"holiday",event:"CHRISTMAS"},
+      {d:26,day:"FRI",status:"holiday",event:""},
+      {d:27,day:"SAT",status:"holiday",event:""},
+      {d:28,day:"SUN",status:"sunday",event:""},
+      {d:29,day:"MON",status:"holiday",event:""},
+      {d:30,day:"TUE",status:"holiday",event:""},
+      {d:31,day:"WED",status:"holiday",event:""},
+    ]
+  },
+  "January 2026": {
+    year: 2026, month: 0,
+    workingDays: 17,
+    days: [
+      {d:1,day:"THU",status:"holiday",event:"NEW YEAR"},
+      {d:2,day:"FRI",status:"holiday",event:""},
+      {d:3,day:"SAT",status:"holiday",event:""},
+      {d:4,day:"SUN",status:"sunday",event:""},
+      {d:5,day:"MON",n:1,status:"working",event:"EVEN SEMESTER BEGINS – I YEAR UG & PG\nMini Project 4th Review – I Year UG"},
+      {d:6,day:"TUE",n:2,status:"working",event:""},
+      {d:7,day:"WED",n:3,status:"working",event:""},
+      {d:8,day:"THU",n:4,status:"working",event:""},
+      {d:9,day:"FRI",n:5,status:"working",event:"PONGAL CELEBRATION"},
+      {d:10,day:"SAT",n:6,status:"working",event:""},
+      {d:11,day:"SUN",status:"sunday",event:""},
+      {d:12,day:"MON",status:"holiday",event:""},
+      {d:13,day:"TUE",status:"holiday",event:"BOGI"},
+      {d:14,day:"WED",status:"holiday",event:"PONGAL"},
+      {d:15,day:"THU",status:"holiday",event:"THIRUVALLUVAR DAY"},
+      {d:16,day:"FRI",status:"holiday",event:"UZHAVAR THIRUNAL"},
+      {d:17,day:"SAT",status:"self-learning",event:"SELF LEARNING – 1\nDr.M.G.Ramachandran 109 Birthday"},
+      {d:18,day:"SUN",status:"sunday",event:""},
+      {d:19,day:"MON",n:7,status:"working",event:""},
+      {d:20,day:"TUE",n:8,status:"working",event:""},
+      {d:21,day:"WED",n:9,status:"working",event:""},
+      {d:22,day:"THU",n:10,status:"working",event:""},
+      {d:23,day:"FRI",n:11,status:"working",event:""},
+      {d:24,day:"SAT",n:12,status:"working",event:"தமிழ் பட்டிமன்றம்"},
+      {d:25,day:"SUN",status:"sunday",event:""},
+      {d:26,day:"MON",status:"holiday",event:"REPUBLIC DAY"},
+      {d:27,day:"TUE",n:13,status:"working",event:"Mini Project 5th Review – I Year UG"},
+      {d:28,day:"WED",n:14,status:"working",event:""},
+      {d:29,day:"THU",n:15,status:"working",event:"UNIT – I Completion (I Year UG & PG IInd Semester)"},
+      {d:30,day:"FRI",n:16,status:"working",event:""},
+      {d:31,day:"SAT",n:17,status:"working",event:""},
+    ]
+  },
+  "February 2026": {
+    year: 2026, month: 1,
+    workingDays: 21,
+    days: [
+      {d:1,day:"SUN",status:"holiday",event:"THAIPOOSAM"},
+      {d:2,day:"MON",n:18,status:"working",event:""},
+      {d:3,day:"TUE",n:19,status:"working",event:""},
+      {d:4,day:"WED",n:20,status:"working",event:"Coding Sprint"},
+      {d:5,day:"THU",n:21,status:"working",event:""},
+      {d:6,day:"FRI",n:22,status:"working",event:""},
+      {d:7,day:"SAT",status:"self-learning",event:"SELF LEARNING – 2"},
+      {d:8,day:"SUN",status:"sunday",event:""},
+      {d:9,day:"MON",n:23,status:"working",event:""},
+      {d:10,day:"TUE",n:24,status:"working",event:""},
+      {d:11,day:"WED",n:25,status:"working",event:""},
+      {d:12,day:"THU",n:26,status:"working",event:""},
+      {d:13,day:"FRI",n:27,status:"working",event:""},
+      {d:14,day:"SAT",n:28,status:"event",event:"Tech Quiz"},
+      {d:15,day:"SUN",status:"sunday",event:""},
+      {d:16,day:"MON",n:29,status:"working",event:""},
+      {d:17,day:"TUE",n:30,status:"working",event:"UNIT – II Completion (I Year UG & PG IInd Semester)\nMini Project 6th Review – I Year UG"},
+      {d:18,day:"WED",n:31,status:"exam",event:"CIE – I EXAM\nASH WEDNESDAY"},
+      {d:19,day:"THU",n:32,status:"exam",event:"CIE – I EXAM"},
+      {d:20,day:"FRI",n:33,status:"exam",event:"CIE – I EXAM"},
+      {d:21,day:"SAT",status:"self-learning",event:"SELF LEARNING – 3"},
+      {d:22,day:"SUN",status:"sunday",event:""},
+      {d:23,day:"MON",n:34,status:"exam",event:"CIE – I EXAM"},
+      {d:24,day:"TUE",n:35,status:"exam",event:"CIE – I EXAM"},
+      {d:25,day:"WED",n:36,status:"exam",event:"CIE – I EXAM"},
+      {d:26,day:"THU",n:37,status:"working",event:""},
+      {d:27,day:"FRI",n:38,status:"event",event:"SPORTS DAY"},
+      {d:28,day:"SAT",status:"self-learning",event:"SELF LEARNING – 4\nSCIENCE DAY"},
+    ]
+  },
+  "March 2026": {
+    year: 2026, month: 2,
+    workingDays: 23,
+    days: [
+      {d:1,day:"SUN",status:"sunday",event:""},
+      {d:2,day:"MON",n:39,status:"working",event:"SEMESTER END EXAM REGISTRATION – I Year UG & PG"},
+      {d:3,day:"TUE",n:40,status:"working",event:"Mini Project 7th & Model Review – I Year UG"},
+      {d:4,day:"WED",n:41,status:"working",event:""},
+      {d:5,day:"THU",n:42,status:"working",event:""},
+      {d:6,day:"FRI",n:43,status:"event",event:"KUZHALI '26"},
+      {d:7,day:"SAT",status:"self-learning",event:"SELF LEARNING – 5"},
+      {d:8,day:"SUN",status:"sunday",event:""},
+      {d:9,day:"MON",n:44,status:"event",event:"Poster Presentation"},
+      {d:10,day:"TUE",n:45,status:"working",event:"UNIT – III Completion – I Year / IInd Semester – UG & PG"},
+      {d:11,day:"WED",n:46,status:"working",event:""},
+      {d:12,day:"THU",n:47,status:"working",event:""},
+      {d:13,day:"FRI",n:48,status:"working",event:""},
+      {d:14,day:"SAT",n:49,status:"event",event:"ALUMNI MEET"},
+      {d:15,day:"SUN",status:"sunday",event:""},
+      {d:16,day:"MON",n:50,status:"working",event:""},
+      {d:17,day:"TUE",n:51,status:"event",event:"PROJECT EXPO – Mini Project – I Year UG"},
+      {d:18,day:"WED",n:52,status:"working",event:""},
+      {d:19,day:"THU",n:53,status:"event",event:"FAREWELL DAY – IVth Year UG & IInd Year PG\nHOSTEL DAY"},
+      {d:20,day:"FRI",n:54,status:"event",event:"COLLEGE DAY CULTURALS"},
+      {d:21,day:"SAT",status:"self-learning",event:"SELF LEARNING – 6"},
+      {d:22,day:"SUN",status:"sunday",event:""},
+      {d:23,day:"MON",n:55,status:"working",event:""},
+      {d:24,day:"TUE",n:56,status:"working",event:"NO DUE & RECORD SUBMISSION – I Year UG & PG"},
+      {d:25,day:"WED",n:57,status:"working",event:""},
+      {d:26,day:"THU",n:58,status:"working",event:""},
+      {d:27,day:"FRI",n:59,status:"exam",event:"Unit – IV Completion – I Year / IInd Semester – UG & PG\nCIE – II (I Year UG & PG)"},
+      {d:28,day:"SAT",status:"self-learning",event:"SELF LEARNING – 7"},
+      {d:29,day:"SUN",status:"sunday",event:""},
+      {d:30,day:"MON",n:60,status:"exam",event:"CIE – II EXAM (I Year UG & PG)"},
+      {d:31,day:"TUE",n:61,status:"exam",event:"CIE – II EXAM (I Year UG & PG)"},
+    ]
+  },
+  "April 2026": {
+    year: 2026, month: 3,
+    workingDays: 22,
+    days: [
+      {d:1,day:"WED",n:62,status:"exam",event:"CIE – II EXAM (I Year UG & PG)"},
+      {d:2,day:"THU",status:"holiday",event:"MAUNDY THURSDAY"},
+      {d:3,day:"FRI",status:"holiday",event:"GOOD FRIDAY"},
+      {d:4,day:"SAT",status:"self-learning",event:"SELF LEARNING – 8"},
+      {d:5,day:"SUN",status:"holiday",event:"EASTER"},
+      {d:6,day:"MON",n:63,status:"exam",event:"CIE – II EXAM (I Year UG & PG)"},
+      {d:7,day:"TUE",n:64,status:"exam",event:"CIE – II EXAM (I Year UG & PG)"},
+      {d:8,day:"WED",n:65,status:"working",event:""},
+      {d:9,day:"THU",n:66,status:"event",event:"Idea Hackathon"},
+      {d:10,day:"FRI",n:67,status:"working",event:""},
+      {d:11,day:"SAT",n:68,status:"working",event:""},
+      {d:12,day:"SUN",status:"sunday",event:""},
+      {d:13,day:"MON",n:69,status:"working",event:""},
+      {d:14,day:"TUE",status:"holiday",event:"TAMIL NEW YEAR / Dr. Ambedkar Jayanti"},
+      {d:15,day:"WED",n:70,status:"working",event:""},
+      {d:16,day:"THU",n:71,status:"working",event:""},
+      {d:17,day:"FRI",n:72,status:"working",event:""},
+      {d:18,day:"SAT",n:73,status:"working",event:"UNIT – V Completion (I Year / IInd Semester – UG & PG)"},
+      {d:19,day:"SUN",status:"sunday",event:""},
+      {d:20,day:"MON",n:74,status:"exam",event:"CIE – III EXAM (I Year UG & PG)"},
+      {d:21,day:"TUE",n:75,status:"exam",event:"CIE – III EXAM (I Year UG & PG)"},
+      {d:22,day:"WED",n:76,status:"exam",event:"CIE – III EXAM (I Year UG & PG)"},
+      {d:23,day:"THU",n:77,status:"exam",event:"CIE – III EXAM (I Year UG & PG)"},
+      {d:24,day:"FRI",n:78,status:"exam",event:"CIE – III EXAM (I Year UG & PG)"},
+      {d:25,day:"SAT",n:79,status:"exam",event:"CIE – III EXAM (I Year UG & PG)"},
+      {d:26,day:"SUN",status:"sunday",event:""},
+      {d:27,day:"MON",n:80,status:"event",event:"MODEL PRACTICAL"},
+      {d:28,day:"TUE",n:81,status:"event",event:"MODEL PRACTICAL"},
+      {d:29,day:"WED",n:82,status:"event",event:"MODEL PRACTICAL"},
+      {d:30,day:"THU",n:83,status:"event",event:"MODEL PRACTICAL"},
+    ]
+  },
+  "May 2026": {
+    year: 2026, month: 4,
+    workingDays: 0,
+    days: [
+      {d:1,day:"FRI",status:"holiday",event:"MAY DAY"},
+      {d:2,day:"SAT",status:"holiday",event:""},
+      {d:3,day:"SUN",status:"sunday",event:""},
+      {d:4,day:"MON",status:"holiday",event:"SEMESTER END PRACTICAL (I Year)"},
+      {d:5,day:"TUE",status:"holiday",event:"SEMESTER END PRACTICAL (I Year)"},
+      {d:6,day:"WED",status:"holiday",event:"SEMESTER END PRACTICAL (I Year)"},
+      {d:7,day:"THU",status:"holiday",event:"SEMESTER END PRACTICAL (I Year)"},
+      {d:8,day:"FRI",status:"holiday",event:"STUDY HOLIDAYS – I Year"},
+      {d:9,day:"SAT",status:"holiday",event:"STUDY HOLIDAYS – I Year"},
+      {d:10,day:"SUN",status:"sunday",event:"STUDY HOLIDAYS – I Year"},
+      {d:11,day:"MON",status:"holiday",event:"SEMESTER END THEORY BEGINS (I Year UG & PG)"},
+      {d:12,day:"TUE",status:"holiday",event:""},
+      {d:13,day:"WED",status:"holiday",event:""},
+      {d:14,day:"THU",status:"holiday",event:""},
+      {d:15,day:"FRI",status:"holiday",event:""},
+      {d:16,day:"SAT",status:"holiday",event:""},
+      {d:17,day:"SUN",status:"sunday",event:""},
+      {d:18,day:"MON",status:"holiday",event:""},
+      {d:19,day:"TUE",status:"holiday",event:""},
+      {d:20,day:"WED",status:"holiday",event:""},
+      {d:21,day:"THU",status:"holiday",event:""},
+      {d:22,day:"FRI",status:"holiday",event:""},
+      {d:23,day:"SAT",status:"holiday",event:""},
+      {d:24,day:"SUN",status:"sunday",event:""},
+      {d:25,day:"MON",status:"holiday",event:""},
+      {d:26,day:"TUE",status:"holiday",event:""},
+      {d:27,day:"WED",status:"holiday",event:"Bakrid"},
+      {d:28,day:"THU",status:"holiday",event:""},
+      {d:29,day:"FRI",status:"holiday",event:""},
+      {d:30,day:"SAT",status:"holiday",event:""},
+      {d:31,day:"SUN",status:"sunday",event:""},
+    ]
+  },
+};
+
+const DAY_NAMES = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+
+function getStatusClass(day) {
+  if (day.status === "sunday") return "sunday";
+  if (day.status === "self-learning") return "self-learning";
+  if (day.status === "exam") return "exam";
+  if (day.status === "event" && day.n) return "event";
+  if (day.status === "working" && day.n) return "working";
+  if (day.event && day.event.length > 0) return "event";
+  return "holiday";
+}
+
+function getStatusLabel(day) {
+  const cls = getStatusClass(day);
+  if (cls === "sunday") return "Weekend";
+  if (cls === "working") return "Working Day";
+  if (cls === "holiday") return "Holiday";
+  if (cls === "self-learning") return "Self Learning";
+  if (cls === "exam") return "Exam";
+  if (cls === "event") return "Event";
+  return "";
+}
+
+function buildCalendar() {
+  const tabsEl = document.getElementById("monthTabs");
+  const mainEl = document.getElementById("mainContent");
+  const months = Object.keys(calendarData);
+
+  months.forEach((monthName, idx) => {
+    // Tab
+    const tab = document.createElement("button");
+    tab.className = "month-tab" + (idx === 2 ? " active" : ""); // Jan active by default
+    tab.textContent = monthName.split(" ")[0];
+    tab.onclick = () => switchMonth(monthName);
+    tabsEl.appendChild(tab);
+
+    // Section
+    const data = calendarData[monthName];
+    const section = document.createElement("div");
+    section.className = "month-section" + (idx === 2 ? " active" : "");
+    section.id = "month-" + monthName.replace(/\s+/g,"_");
+
+    // Count stats
+    const workDays = data.days.filter(d => d.n).length;
+    const holidays = data.days.filter(d => getStatusClass(d) === "holiday").length;
+    const selfLearn = data.days.filter(d => getStatusClass(d) === "self-learning").length;
+    const exams = data.days.filter(d => getStatusClass(d) === "exam").length;
+
+    // Find first day of month
+    const firstDate = new Date(data.year, data.month, 1);
+    const firstDayOfWeek = firstDate.getDay(); // 0=Sun
+
+    section.innerHTML = `
+      <div class="month-header">
+        <span class="month-name">${monthName.split(" ")[0]}</span>
+        <span class="month-year">${monthName.split(" ")[1]}</span>
+        ${workDays > 0 ? `<span class="working-days-badge">📅 ${workDays} Working Days</span>` : ''}
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" style="color:var(--working-green)">${workDays}</div>
+          <div class="stat-label">Working Days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="color:var(--holiday-red)">${holidays}</div>
+          <div class="stat-label">Holidays</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="color:#b5840a">${selfLearn}</div>
+          <div class="stat-label">Self Learning</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="color:#8b2a70">${exams}</div>
+          <div class="stat-label">Exam Days</div>
+        </div>
+      </div>
+      <div class="calendar-grid" id="grid-${monthName.replace(/\s+/g,"_")}"></div>
+    `;
+    mainEl.appendChild(section);
+
+    // Build grid
+    const grid = section.querySelector(".calendar-grid");
+
+    // Day headers
+    DAY_NAMES.forEach(d => {
+      const h = document.createElement("div");
+      h.className = "day-header" + (d === "SUN" ? " sun-header" : "");
+      h.textContent = d;
+      grid.appendChild(h);
+    });
+
+    // Empty cells before first day
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      const empty = document.createElement("div");
+      empty.className = "day-cell empty";
+      grid.appendChild(empty);
+    }
+
+    // Day cells
+    data.days.forEach(day => {
+      const cls = getStatusClass(day);
+      const label = getStatusLabel(day);
+      const cell = document.createElement("div");
+      cell.className = `day-cell ${cls}`;
+      if (day.event) cell.setAttribute("data-full-event", day.event);
+
+      cell.innerHTML = `
+        <div class="date-num">${day.d}</div>
+        <div class="day-label">${label}</div>
+        ${day.n ? `<div class="working-num">#${day.n}</div>` : ""}
+        ${day.event ? `<div class="event-text">${day.event.replace(/\n/g,"<br>")}</div>` : ""}
+      `;
+      grid.appendChild(cell);
+    });
+  });
+}
+
+function switchMonth(monthName) {
+  document.querySelectorAll(".month-section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".month-tab").forEach(t => t.classList.remove("active"));
+  document.getElementById("month-" + monthName.replace(/\s+/g,"_")).classList.add("active");
+  const tabs = document.querySelectorAll(".month-tab");
+  const months = Object.keys(calendarData);
+  tabs[months.indexOf(monthName)].classList.add("active");
+}
+
+buildCalendar();
+</script>
+</body>
+</html>
